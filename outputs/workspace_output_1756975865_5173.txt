@@ -1,0 +1,43 @@
+Collecting Flask==2.3.2 (from -r requirements.txt (line 1))
+  Downloading Flask-2.3.2-py3-none-any.whl.metadata (3.7 kB)
+Collecting Flask-WTF==1.1.1 (from -r requirements.txt (line 2))
+  Downloading Flask_WTF-1.1.1-py3-none-any.whl.metadata (1.9 kB)
+Collecting WTForms==3.0.1 (from -r requirements.txt (line 3))
+  Downloading WTForms-3.0.1-py3-none-any.whl.metadata (3.2 kB)
+Collecting OpenCV-Python==4.8.0.74 (from -r requirements.txt (line 4))
+  Downloading opencv_python-4.8.0.74-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (19 kB)
+Collecting NumPy==1.24.3 (from -r requirements.txt (line 5))
+  Downloading numpy-1.24.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.6 kB)
+Collecting Werkzeug==2.3.6 (from -r requirements.txt (line 6))
+  Downloading Werkzeug-2.3.6-py3-none-any.whl.metadata (4.1 kB)
+Collecting Jinja2>=3.1.2 (from Flask==2.3.2->-r requirements.txt (line 1))
+  Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting itsdangerous>=2.1.2 (from Flask==2.3.2->-r requirements.txt (line 1))
+  Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Requirement already satisfied: click>=8.1.3 in /usr/local/lib/python3.11/site-packages (from Flask==2.3.2->-r requirements.txt (line 1)) (8.2.1)
+Collecting blinker>=1.6.2 (from Flask==2.3.2->-r requirements.txt (line 1))
+  Downloading blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting MarkupSafe (from WTForms==3.0.1->-r requirements.txt (line 3))
+  Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+Downloading Flask-2.3.2-py3-none-any.whl (96 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 96.9/96.9 kB 4.0 MB/s eta 0:00:00
+Downloading Flask_WTF-1.1.1-py3-none-any.whl (12 kB)
+Downloading WTForms-3.0.1-py3-none-any.whl (136 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 136.5/136.5 kB 7.9 MB/s eta 0:00:00
+Downloading opencv_python-4.8.0.74-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (61.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.7/61.7 MB 76.0 MB/s eta 0:00:00
+Downloading numpy-1.24.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 17.3/17.3 MB 110.4 MB/s eta 0:00:00
+Downloading Werkzeug-2.3.6-py3-none-any.whl (242 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 242.5/242.5 kB 59.3 MB/s eta 0:00:00
+Downloading blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 33.8 MB/s eta 0:00:00
+Downloading MarkupSafe-3.0.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (23 kB)
+Installing collected packages: NumPy, MarkupSafe, itsdangerous, blinker, WTForms, Werkzeug, OpenCV-Python, Jinja2, Flask, Flask-WTF
+Successfully installed Flask-2.3.2 Flask-WTF-1.1.1 Jinja2-3.1.6 MarkupSafe-3.0.2 NumPy-1.24.3 OpenCV-Python-4.8.0.74 WTForms-3.0.1 Werkzeug-2.3.6 blinker-1.9.0 itsdangerous-2.2.0
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 25.2
+[notice] To update, run: pip install --upgrade pip

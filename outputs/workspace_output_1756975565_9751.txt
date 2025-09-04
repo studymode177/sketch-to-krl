@@ -1,0 +1,50 @@
+               KUKA System Software                             KUKA Roboter GmbH
+
+
+
+
+               KUKA System Software 8.3
+
+               Operating and Programming Instructions for System Integrators
+
+
+
+
+KUKA System
+
+Software 8.3
+
+
+
+
+               Issued: 14.01.2015
+
+
+               Version: KSS 8.3 SI V4
+           KUKA System Software 8.3
+
+
+
+
+          © Copyright 2015
+          KUKA Roboter GmbH
+          Zugspitzstraße 140
+          D-86165 Augsburg
+          Germany
+
+
+          This documentation or excerpts therefrom may not be reproduced or disclosed to third parties without
+          the express permission of KUKA Roboter GmbH.
+          Other functions not described in this documentation may be operable in the controller. The user has
+          no claims to these functions, however, in the case of a replacement or service work.
+          We have checked the content of this documentation for conformity with the hardware and software
+          described. Nevertheless, discrepancies cannot be precluded, for which reason we are not able to
+          guarantee total conformity. The information in this documentation is checked on a regular basis, how-
+          ever, and necessary corrections will be incorporated in the subsequent edition.
+          Subject to technical alterations without an effect on the function.
+          Translation of the original documentation
+          KIM-PS5-DOC
+
+
+
+

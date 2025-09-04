@@ -1,0 +1,385 @@
+                                                                             7 Program and project management
+
+
+Description
+
+
+
+
+                          Fig. 7-6: Program is open
+
+                              1     Cursor
+                              2     Program path and file name
+                              3     Position of the cursor in the program
+
+
+7.5.3     Toggling between the Navigator and the program
+
+Description               If a program is selected or open, it is possible to display the Navigator again
+                          without having to deselect or close the program. The user can then return to
+                          the program.
+
+Procedure                 Program is selected:
+                                 Toggling from the program to the Navigator: select the menu sequence
+                                  Edit > Navigator.
+                                 Toggling from the Navigator to the program: press PROGRAM.
+                          Program is open:
+                                 Toggling from the program to the Navigator: select the menu sequence
+                                  Edit > Navigator.
+                                 Toggling from the Navigator to the program: press EDITOR.
+
+                                        Programs that are running or have been interrupted must first be
+                                        stopped before the menu sequences and buttons referred to above
+                                        are available.
+
+
+7.6       Structure of a KRL program
+
+                           1      DEF my_program( )
+                           2      INI
+                           3
+                           4      PTP HOME    Vel= 100 % DEFAULT
+                                  ...
+                           8      LIN point_5 CONT Vel= 2 m/s CPDAT1 Tool[3] Base[4]
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                      239 / 491
+             KUKA System Software 8.3
+
+
+                                             ...
+                                        14 PTP point_1 CONT Vel= 100 % PDAT1 Tool[3] Base[4]
+                                             ...
+                                        20 PTP HOME    Vel= 100 % DEFAULT
+                                        21
+                                        22 END
+
+                                        Line          Description
+                                        1             The DEF line indicates the name of the program. If the pro-
+                                                      gram is a function, the DEF line begins with “DEFFCT” and
+                                                      contains additional information. The DEF line can be dis-
+                                                      played or hidden.
+                                                       (>>> 7.7.1 "Displaying/hiding the DEF line" Page 241)
+                                        2             The INI line contains initializations for internal variables and
+                                                      parameters.
+                                        4             HOME position
+                                                       (>>> 7.6.1 "HOME position" Page 240)
+                                        8             LIN motion
+                                                       (>>> 10.2.3 "Programming a LIN motion" Page 308)
+                                        14            PTP motion
+                                                       (>>> 10.2.1 "Programming a PTP motion" Page 307)
+                                        20            HOME position
+                                        22            The END line is the last line in any program. If the program is
+                                                      a function, the wording of the END line is “ENDFCT”. The
+                                                      END line must not be deleted!
+
+                                   The first motion instruction in a KRL program must define an unambiguous
+                                   starting position. The HOME position, which is stored by default in the robot
+                                   controller, ensures that this is the case.
+                                   If the first motion instruction is not the default HOME position, or if this position
+                                   has been changed, one of the following statements must be used:
+                                            Complete PTP instruction of type POS or E6POS
+                                            Complete PTP instruction of type AXIS or E6AXIS
+                                   “Complete” means that all components of the end point must be specified.
+
+                                                              If the HOME position is modified, this affects all pro-
+                                                              grams in which it is used. Injuries or damage to property
+                                    may result.
+
+                                   In programs that are used exclusively as subprograms, different statements
+                                   can be used as the first motion instruction.
+
+
+            7.6.1     HOME position
+
+                                   The HOME position is not program-specific. It is generally used as the first and
+                                   last position in the program as it is uniquely defined and uncritical.
+                                   The HOME position is stored by default with the following values in the robot
+                                   controller:
+
+                                        Axis             A1         A2         A3          A4          A5          A6
+                                        Pos.             0°         - 90°      + 90°       0°          0°          0°
+
+
+
+
+240 / 491                                                                           Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                           7 Program and project management
+
+
+                          Additional HOME positions can be taught. A HOME position must meet the fol-
+                          lowing conditions:
+                             Good starting position for program execution
+                             Good standstill position. For example, the stationary robot must not be an
+                              obstacle.
+
+                                               If the HOME position is modified, this affects all pro-
+                                               grams in which it is used. Injuries or damage to property
+                          may result.
+
+
+7.7       Displaying/hiding program sections
+
+7.7.1     Displaying/hiding the DEF line
+
+Description               By default, the DEF line is hidden. Declarations can only be made in a program
+                          if the DEF line is visible.
+                          The DEF line is displayed and hidden separately for opened and selected pro-
+                          grams. If detail view (ASCII mode) is activated, the DEF line is visible and does
+                          not need to be activated separately.
+
+Precondition                 User group “Expert”
+                             Program is selected or open.
+
+Procedure                 1. Select the menu sequence Edit > View. The subitem DEF line displays
+                             the current status:
+                                  Check box not active: The DEF line is hidden.
+                                  Check box active: The DEF line is displayed.
+
+
+
+
+                          2. To change the status, touch the menu item DEF line.
+                              The menu then closes automatically.
+
+
+7.7.2     Activating detail view
+
+Description               Detail view (ASCII mode) is deactivated by default to keep the program trans-
+                          parent. If detail view is activated, hidden program lines, such as the FOLD and
+                          ENDFOLD lines and the DEF line, are displayed.
+                          Detail view is activated and deactivated separately for opened and selected
+                          programs.
+
+Precondition                 “Expert” user group
+
+Procedure                 1. Select the menu sequence Edit > View. The subitem Detail view (ASCII)
+                             displays the current status:
+                                  Check box not active: Detail view is deactivated.
+                                  Check box active: Detail view is activated.
+
+
+
+
+                          2. To change the status, touch the menu item Detail view (ASCII).
+                              The menu then closes automatically.
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                    241 / 491
+             KUKA System Software 8.3
+
+
+            7.7.3     Activating/deactivating the line break function
+
+            Description            If a line is wider than the program window, the line is broken by default. The
+                                   part of the line after the break has no line number and is marked with a black,
+                                   L-shaped arrow.
+
+
+
+
+                                   Fig. 7-7: Line break
+
+                                   The line break function can be deactivated. If a line is wider than the program
+                                   window, the line is no longer visible in its entirety. A scroll bar is displayed un-
+                                   derneath the program window.
+                                   The line break function is activated and deactivated separately for opened and
+                                   selected programs.
+
+            Precondition               User group “Expert”
+                                       Program is selected or open.
+
+            Procedure              1. Select the menu sequence Edit > View. The subitem Line break displays
+                                      the current status:
+                                           Check box not active: Line break function is deactivated.
+                                           Check box active: Line break function is activated.
+
+
+
+
+                                   2. To change the status, touch the menu item Line break.
+                                        The menu then closes automatically.
+
+
+            7.7.4     Displaying Folds
+
+            Description            Folds are used to hide sections of the program. In this way, Folds make pro-
+                                   grams more transparent. The hidden program sections are processed during
+                                   program execution in exactly the same way as normal program sections.
+                                       In the user group “User”, Folds are always closed. In other words, the con-
+                                        tents of the Folds are not visible and cannot be edited.
+                                       In the user group “Expert”, Folds are closed by default. They can be
+                                        opened and edited. New Folds can be created.
+                                        (>>> 7.8.3 "Creating folds" Page 245)
+                                   If a program is deselected, all Folds are automatically closed.
+
+
+
+
+                                   Fig. 7-8: Example of a closed Fold
+
+
+
+
+242 / 491                                                                      Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                          7 Program and project management
+
+
+
+
+                          Fig. 7-9: Example of an open Fold
+
+                          Color coding of Folds:
+
+                              Color             Description
+                              Dark red          Closed fold
+                              Light red         Opened fold
+                              Dark blue         Closed sub-Fold
+                              Light blue        Opened sub-Fold
+                              Green             Contents of the Fold
+
+Precondition                   User group “Expert”
+                               Program is selected or open.
+
+Procedure                 1. Select the line containing the Fold.
+                          2. Press Open/close fold. The Fold then opens.
+                          3. To close the fold, press Open/close fold again.
+                          Alternatively, use the menu sequence Edit > FOLD > Open all FOLDs or
+                          Close all FOLDs to open or close all the Folds in a program at once.
+
+
+7.8       Editing programs
+
+Overview                       A running program cannot be edited.
+                               Programs cannot be edited in AUT EXT mode.
+
+                                  If a selected program is edited in the user group “Expert”, the cursor
+                                  must then be removed from the edited line and positioned in any other
+                                  line!
+                          Only in this way is it certain that the editing will be applied when the program
+                          is deselected again.
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                   243 / 491
+             KUKA System Software 8.3
+
+
+                                        Action                    Possible in user group …?
+                                        Insert comment or         User: Yes
+                                        stamp
+                                                                  Expert: Yes
+                                        Delete lines              User: Yes
+                                                                  Expert: Yes
+                                        Create folds              User: No
+                                                                  Expert: Yes
+                                        Copy                      User: No
+                                                                  Expert: Yes
+                                        Paste                     User: No
+                                                                  Expert: Yes
+                                        Insert blank lines        User: No
+                                        (press the Enter key)
+                                                                  Expert: Yes
+                                        Cut                       User: No
+                                                                  Expert: Yes
+                                        Find                      User: Yes
+                                                                  Expert: Yes
+                                                                  Possible for all user groups in an open program,
+                                                                  even in AUT EXT mode.
+                                        Replace                   User: No
+                                                                  Expert: Yes (program is open, not selected)
+                                        Programming with          User: Yes
+                                        inline forms
+                                                                  Expert: Yes
+                                        KRL programming           User: Possible to a certain extent. KRL instruc-
+                                                                  tions covering several lines (e.g. LOOP … END-
+                                                                  LOOP) are not permissible.
+                                                                  Expert: Yes
+
+
+            7.8.1     Inserting a comment or stamp
+
+            Precondition                 Program is selected or open.
+                                         Operating mode T1
+
+            Procedure              1. Select the line after which the comment or stamp is to be inserted.
+                                   2. Select the menu sequence Commands > Comment > Normal or Stamp.
+                                   3. Enter the desired data. If a comment or stamp has already been entered
+                                      previously, the inline form still contains the same entries.
+                                               In the case of a comment, the box can be cleared using New text
+                                                ready for entry of a new text.
+                                               In the case of a stamp, the system time can also be updated using
+                                                New time and the NAME box can be cleared using New name.
+                                   4. Save with Cmd Ok.
+
+
+
+
+244 / 491                                                                       Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                             7 Program and project management
+
+
+Description
+Comment
+
+
+
+
+                          Fig. 7-10: Inline form “Comment”
+
+                              Item    Description
+                               1      Any text
+
+Description               A stamp is a comment that is extended to include the system date and time
+Stamp                     and the user ID.
+
+
+
+
+                          Fig. 7-11: Inline form “Stamp”
+
+                              Item    Description
+                               1      System date (cannot be edited)
+                               2      System time
+                               3      Name or ID of the user
+                               4      Any text
+
+
+7.8.2     Deleting program lines
+
+
+                                     Lines cannot be restored once they have been deleted!
+
+
+
+Description               If a program line containing a motion instruction is deleted, the point name and
+                          coordinates remain saved in the DAT file. The point can be used in other mo-
+                          tion instructions and does not need to be taught again.
+
+Precondition                  Program is selected or open.
+                              Operating mode T1
+
+Procedure                 1. Select the line to be deleted. (The line need not have a colored back-
+                             ground. It is sufficient for the cursor to be in the line.)
+                               If several consecutive lines are to be deleted: drag a finger or stylus across
+                               the desired area. (The area must now have a colored background.)
+                          2. Select the menu sequence Edit > Delete.
+                          3. Confirm the request for confirmation with Yes.
+
+
+7.8.3     Creating folds
+
+Syntax                    ;FOLD Name
+                          Statements
+                          ;ENDFOLD <Name>
+                          The ENDFOLD lines can be assigned more easily if the name of the Fold is
+                          entered here as well. Folds can be nested.
+
+Precondition                  “Expert” user group
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                      245 / 491
+

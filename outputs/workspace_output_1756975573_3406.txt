@@ -1,0 +1,90 @@
+          7.1      Creating a new program ............................................................................................           231
+          7.2      Creating a new folder ................................................................................................        231
+          7.3      Renaming a file or folder ...........................................................................................         231
+          7.4      Navigator file manager .............................................................................................          232
+          7.4.1        Selecting filters .....................................................................................................   233
+          7.4.2        Displaying or modifying properties of files and folders .........................................                         233
+          7.5      Selecting or opening a program ................................................................................               237
+          7.5.1        Selecting and deselecting a program ...................................................................                   237
+          7.5.2        Opening a program ..............................................................................................          238
+          7.5.3        Toggling between the Navigator and the program ...............................................                            239
+          7.6      Structure of a KRL program .......................................................................................            239
+          7.6.1        HOME position .....................................................................................................       240
+          7.7      Displaying/hiding program sections ...........................................................................                241
+          7.7.1        Displaying/hiding the DEF line ..............................................................................             241
+          7.7.2        Activating detail view ............................................................................................       241
+          7.7.3        Activating/deactivating the line break function ......................................................                    242
+          7.7.4        Displaying Folds ...................................................................................................      242
+          7.8      Editing programs .......................................................................................................      243
+          7.8.1        Inserting a comment or stamp ..............................................................................               244
+          7.8.2        Deleting program lines ..........................................................................................         245
+          7.8.3        Creating folds .......................................................................................................    245
+--
+10.6.10 Inline form “WAIT” .................................................................................................                 348
+10.6.11 Programming a signal-dependent wait function - WAITFOR ................................                                              348
+10.6.12 Inline form “WAITFOR” .........................................................................................                      349
+10.6.13 Switching on the path - SYN OUT ........................................................................                             350
+10.6.14 Inline form “SYN OUT”, option “START/END” ......................................................                                     350
+10.6.15 Inline form “SYN OUT”, option “PATH” .................................................................                               353
+10.6.16 Setting a pulse on the path - SYN PULSE ............................................................                                 355
+10.6.17 Inline form “SYN PULSE” .....................................................................................                        355
+10.6.18 Modifying a logic instruction ..................................................................................                     356
+
+11       Programming for user group “Expert” (KRL syntax) ...............................                                                   357
+11.1 Overview of KRL syntax .............................................................................................                    357
+11.2 Symbols and fonts .....................................................................................................                 359
+11.3 Important KRL terms ..................................................................................................                  359
+11.3.1       SRC files and DAT files ........................................................................................                359
+11.3.2       Naming conventions and keywords ......................................................................                          360
+11.3.3       Data types .............................................................................................................        361
+11.3.4       Areas of validity ....................................................................................................          362
+11.3.4.1         Making subprograms, functions and interrupts available globally ...................                                         362
+11.3.4.2         Making variables, constants, signals and user data types available globally ..                                              363
+11.3.5       Constants ..............................................................................................................        364
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                                                         11 / 491
+--
+
+
+1.1          Target group
+t
+
+
+
+
+                             This documentation is aimed at users with the following knowledge and skills:
+                                Advanced knowledge of the robot controller system
+                                Advanced KRL programming skills
+
+                                    For optimal use of our products, we recommend that our customers
+                                    take part in a course of training at KUKA College. Information about
+                                    the training program can be found at www.kuka.com or can be ob-
+                             tained directly from our subsidiaries.
+
+
+1.2          Industrial robot documentation
+
+                             The industrial robot documentation consists of the following parts:
+--
+                                Data and file management
+                                etc.
+                             Additional technology packages, containing application-specific instructions
+                             and configurations, can be installed.
+
+smartHMI                     The user interface of the KUKA System Software is called KUKA smartHMI
+                             (smart Human-Machine Interface).
+                             Features:
+                                User administration
+                                Program editor
+                                KRL (KUKA Robot Language)
+
+
+    Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                     17 / 491
+            KUKA System Software 8.3
+
+
+                                      Inline forms for programming
+                                      Message display
+                                      Configuration window
+                                      etc.

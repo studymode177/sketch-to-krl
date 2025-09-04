@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/workspace/sketch_to_krl/app.py", line 9, in <module>
+    from utils.krl_generator import KRLGenerator
+  File "/workspace/sketch_to_krl/utils/krl_generator.py", line 1
+    = []            for point in path['points']:                # Convert canvas coordinates to KRL coordinates with realistic robot workspace values                # Assuming the robot workspace is 1000mm x 1000mm x 1000mm                x = (point['x'] / canvas_size[0]) * 800 + 100  # Scale to 100-900mm range                y = (point['y'] / canvas_size[1]) * 800 + 100  # Scale to 100-900mm range                z = 300  # Default Z height for a consistent plane                                coords.append({                    'x': round(x, 2),                    'y': round(y, 2),                    'z': round(z, 2)                })                        krl_coordinates.append(coords)                return krl_coordinates
+                          ^^^
+SyntaxError: invalid syntax

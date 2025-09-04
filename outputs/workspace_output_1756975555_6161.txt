@@ -1,0 +1,21 @@
+Title:           KUKA System Software 8.3
+Keywords:        Issued: 14.01.2015 Version: KSS 8.3 SI V4
+Author:          PS5
+Creator:         FrameMaker 9.0
+Producer:        Acrobat Elements 9.0.0 (Windows)
+CreationDate:    Wed Jan 14 07:17:45 2015 UTC
+ModDate:         Fri Feb 10 02:38:12 2017 UTC
+Custom Metadata: yes
+Metadata Stream: yes
+Tagged:          no
+UserProperties:  no
+Suspects:        no
+Form:            none
+JavaScript:      no
+Pages:           491
+Encrypted:       yes (print:yes copy:yes change:no addNotes:yes algorithm:AES)
+Page size:       595 x 842 pts (A4)
+Page rot:        0
+File size:       16187196 bytes
+Optimized:       yes
+PDF version:     1.6
