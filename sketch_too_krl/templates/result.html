@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Generated KRL Code</h2>
+<p>Your KRL program has been generated based on your sketch and preferences:</p>
+
+<pre>{{ krl_code }}</pre>
+
+<div class="mt-4">
+    <button class="btn btn-primary" onclick="copyToClipboard()">Copy to Clipboard</button>
+    <a href="/" class="btn btn-secondary">Upload Another Sketch</a>
+</div>
+
+<script>
+    function copyToClipboard() {
+        const text = document.querySelector('pre').innerText;
+        navigator.clipboard.writeText(text).then(function() {
+            alert('KRL code copied to clipboard!');
+        }, function(err) {
+            alert('Failed to copy KRL code: ' + err);
+        });
+    }
+</script>
+{% endblock %}
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>

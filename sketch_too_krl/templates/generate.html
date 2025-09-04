@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Generate KRL Code</h2>
+<p>Answer the following questions to generate your KRL program:</p>
+
+<form method="post" action="/generate">
+    <div class="mb-3">
+        <label class="form-label">Start Position:</label>
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="start_position" id="home" value="HOME" checked>
+                <label class="form-check-label" for="home">HOME (Standard robot home position)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="start_position" id="anywhere" value="Anywhere">
+                <label class="form-check-label" for="anywhere">Anywhere (Current robot position)</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Motion Types:</label>
+        <div class="alert alert-info">
+            <p>Based on your sketch, we detected {{ paths|length }} path(s) that can be converted to robot motions. 
+            Please select the appropriate motion type for each path:</p>
+        </div>
+        
+        {% for i in range(paths|length) %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title">Path {{ i+1 }}</h5>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="ptp{{ i }}" value="PTP" checked>
+                        <label class="form-check-label" for="ptp{{ i }}">PTP (Point-to-Point)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="lin{{ i }}" value="LIN">
+                        <label class="form-check-label" for="lin{{ i }}">LIN (Linear)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="circ{{ i }}" value="CIRC">
+                        <label class="form-check-label" for="circ{{ i }}">CIRC (Circular)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="spline{{ i }}" value="SPLINE">
+                        <label class="form-check-label" for="spline{{ i }}">SPLINE (Smooth path)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        {% if paths|length == 0 %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title">Default Motion</h5>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="ptp0" value="PTP" checked>
+                        <label class="form-check-label" for="ptp0">PTP (Point-to-Point)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="lin0" value="LIN">
+                        <label class="form-check-label" for="lin0">LIN (Linear)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="circ0" value="CIRC">
+                        <label class="form-check-label" for="circ0">CIRC (Circular)</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="motion_types" id="spline0" value="SPLINE">
+                        <label class="form-check-label" for="spline0">SPLINE (Smooth path)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Interpretation Method:</label>
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="interpretation" id="direct" value="direct" checked>
+                <label class="form-check-label" for="direct">Direct sketch interpretation (use path shapes directly)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="interpretation" id="coordinates" value="coordinates">
+                <label class="form-check-label" for="coordinates">With coordinates (convert sketch to specific coordinates)</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Clarifications:</label>
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="clarifications" id="yes" value="yes">
+                <label class="form-check-label" for="yes">Yes (Ask for additional clarifications)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="clarifications" id="no" value="no" checked>
+                <label class="form-check-label" for="no">No (Use default parameters)</label>
+            </div>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Generate KRL Code</button>
+</form>
+
+<div class="mt-4">
+    <a href="/process" class="btn btn-secondary">Back to Processing</a>
+    <a href="/" class="btn btn-secondary">Upload Another Sketch</a>
+</div>
+{% endblock %}
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
