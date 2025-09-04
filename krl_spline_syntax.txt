@@ -1,0 +1,616 @@
+                                                                       11 Programming for user group “Expert”...
+
+
+                              Statement                             End position
+                              SPTP_REL {A6 0, E1 950}               A6 = 120°, E1 = 1070°
+                              PTP_REL {A6 0, E1 950}                A6 = 120°, E1 = -10°
+
+                          The robot position, if not specified, is implicitly Cartesian, as explained in ex-
+                          ample 3.
+                          If, however, the axis-specific robot position and not the Cartesian position is to
+                          remain unchanged, a zero motion must be specified explicitly for at least one
+                          robot axis, as illustrated here in example 4.
+                          Example 5:
+
+                              Statement                             End position
+                              SLIN_REL {X 300, E1 880}              X = 1800 mm, E1 = 1000°
+                              LIN_REL {X 300, E1 880}               X = 1800 mm, E1 = 280°
+
+                          External axis motions are always axis-specific. They are thus specified in de-
+                          grees, even in these statements that only allow Cartesian coordinates for robot
+                          positions.
+
+
+11.6      Motion programming: spline
+
+11.6.1    SPLINE ... ENDSPLINE
+
+Description               SPLINE … ENDSPLINE defines a CP spline block. A CP spline block may
+                          contain:
+                               SLIN, SCIRC and SPL segments (number limited only by the memory ca-
+                                pacity)
+                               PATH trigger
+                               1 time block (TIME_BLOCK …)
+                                or 1 constant velocity range (CONST_VEL …)
+                               STOP WHEN PATH
+                               Comments
+                               Blank lines
+                          The block must not include any other instructions, e.g. variable assignments
+                          or logic statements.
+
+                                 The start point of a spline block is the last point before the spline
+                                 block.
+                                 The end point of a spline block is the last point in the spline block.
+                          A spline block does not trigger an advance run stop.
+
+Syntax                    SPLINE < WITH SysVar1 = Value1 <, SysVar2 = Value2, … > >
+                          Segment1
+                          …
+                          <SegmentN>
+                          ENDSPLINE <C_SPL>
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                         375 / 491
+             KUKA System Software 8.3
+
+
+            Explanation of               Element                                 Description
+            the syntax                  SysVar           (>>> 11.6.7 "System variables for WITH" Page 382)
+                                        Value            Value assignment to the system variable. The value is not
+                                                         valid for segments which have their own value assigned.
+                                                         With this one exception, the value remains valid, in the
+                                                         usual way, until a new value is assigned to the system vari-
+                                                         able.
+                                                         The system variables can also be assigned values by
+                                                         means of a function call. The same restrictions apply to
+                                                         these functions as to functions in the trigger.
+                                                         (>>> 11.11.3 "Constraints for functions in the trigger"
+                                                         Page 431)
+                                        C_SPL               With C_SPL: the end point is approximated. $APO de-
+                                                             fines the earliest point at which the approximate posi-
+                                                             tioning can begin.
+                                                            Without C_SPL: the motion stops exactly at the end
+                                                             point.
+
+                                           In System Software 8.2 and earlier, the identifier for approximate po-
+                                           sitioning with spline was “C_DIS”. If programs based on 8.2 or older
+                                           versions are used in higher versions of 8.x and contain C_DIS, this
+                                    can be retained and does not have to be changed to C_SPL.
+
+            Example                     SPLINE
+                                          SPL P1
+                                          TRIGGER WHEN PATH=GET_PATH() ONSTART DELAY=0 DO <subprog> PRIO=-1
+                                          SPL P2
+                                          SLIN P3
+                                          SPL P4
+                                          SCIRC P5, P6 WITH $VEL.CP=0.2
+                                          SPL P7 WITH $ACC={CP 2.0, ORI1 200, ORI2 200}
+                                          SCIRC P8, P9
+                                          SPL P10
+                                        ENDSPLINE
+
+
+
+            11.6.2    PTP_SPLINE ... ENDSPLINE
+
+            Description            PTP_SPLINE … ENDSPLINE defines a PTP spline block. A PTP spline block
+                                   may contain:
+                                         SPTP segments (number limited only by the memory capacity)
+                                         PATH trigger
+                                         1 time block (TIME_BLOCK …)
+                                         STOP WHEN PATH
+                                         Comments
+                                         Blank lines
+                                   The block must not include any other instructions, e.g. variable assignments
+                                   or logic statements.
+
+                                           The start point of a spline block is the last point before the spline
+                                           block.
+                                           The end point of a spline block is the last point in the spline block.
+                                    A spline block does not trigger an advance run stop.
+
+            Syntax                 PTP_SPLINE < WITH SysVar1 = Value1 <, SysVar2 = Value2, … > >
+
+
+376 / 491                                                                         Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                       11 Programming for user group “Expert”...
+
+
+                          Segment1
+                          …
+                          <SegmentN>
+                          ENDSPLINE <C_SPL>
+
+Explanation of                Element                                Description
+the syntax                 SysVar            (>>> 11.6.7 "System variables for WITH" Page 382)
+                           Value             Value assignment to the system variable. The value is not
+                                             valid for segments which have their own value assigned.
+                                             With this one exception, the value remains valid, in the
+                                             usual way, until a new value is assigned to the system vari-
+                                             able.
+                                             The system variables can also be assigned values by
+                                             means of a function call. The same restrictions apply to
+                                             these functions as to functions in the trigger.
+                                             (>>> 11.11.3 "Constraints for functions in the trigger"
+                                             Page 431)
+                           C_SPL                With C_SPL: the end point is approximated. $APO de-
+                                                 fines the earliest point at which the approximate posi-
+                                                 tioning can begin.
+                                                Without C_SPL: the motion stops exactly at the end
+                                                 point.
+
+Example                    PTP_SPLINE WITH $ACC_AXIS[1]={CP 20, ORI1 80, ORI2 80}
+                              SPTP P1
+                              TRIGGER WHEN PATH=GET_PATH() ONSTART DELAY=0 DO <subprog> PRIO=-1
+                              SPTP P2
+                              SPTP P3
+                              SPTP P4 WITH $ACC_AXIS[1]={CP 10}
+                           ENDSPLINE C_SPL
+
+
+
+11.6.3    SLIN, SCIRC, SPL
+
+Description               SLIN, SCIRC:
+                          SLIN and SCIRC can be programmed as a segment in a CP spline block or as
+                          an individual motion.
+                          It is possible to copy an individual SLIN or SCIRC motion into a CP spline
+                          block, but only if it does not contain an assignment to system variables that are
+                          prohibited there.
+                          SPL:
+                          SPL can be programmed as a segment in a CP spline block.
+
+Syntax                    SLIN:
+                          SLIN End point <WITH SysVar1 = Value1 <, SysVar2 = Value2, …, >> <C_SPL>
+                          SCIRC:
+                          SCIRC Auxiliary point, End point <, CA Circular angle> <WITH SysVar1 = Value1
+                          <,SysVar2 = Value2 , … >> <C_SPL>
+                          SPL:
+                          SPL End point <WITH SysVar1 = Value1 <, SysVar2 = Value2 , …>>
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                         377 / 491
+             KUKA System Software 8.3
+
+
+            Explanation of                Element                              Description
+            the syntax                  Auxiliary     Type: POS, E6POS, FRAME
+                                        point
+                                                      The coordinates refer to the BASE coordinate system.
+                                        End point
+                                                      If not all components of the end point are specified, the
+                                                      controller takes the values of the previous position for the
+                                                      missing components. If this previous position is the end
+                                                      point of a circle with a circular angle, the following distinc-
+                                                      tion is made:
+                                                         If the previous position is outside a spline block, the val-
+                                                          ues of the end point that is actually reached are applied,
+                                                          and not those of the programmed end point.
+                                                         If the previous position is inside a spline block, the val-
+                                                          ues of the programmed end point are applied, and not
+                                                          those of the end point that is actually reached.
+                                                      If no previous position is known to the robot controller, the
+                                                      missing components are taken from the current robot posi-
+                                                      tion.
+                                        Circular      Unit: Degrees; without restriction
+                                        angle
+                                                      (>>> 9.9 "Circular angle" Page 300)
+                                        SysVar        (>>> 11.6.7 "System variables for WITH" Page 382)
+                                        Value         Value assignment to the system variable.
+                                                      In the case of segments: The assignment applies only for
+                                                      this segment.
+                                                      The system variables can also be assigned values by
+                                                      means of a function call. The same restrictions apply to
+                                                      these functions as to functions in the trigger.
+                                                      (>>> 11.11.3 "Constraints for functions in the trigger"
+                                                      Page 431)
+                                        C_SPL            With C_SPL: the end point is approximated. $APO de-
+                                                          fines the earliest point at which the approximate posi-
+                                                          tioning can begin.
+                                                          Only possible for individual motions, not for segments.
+                                                         Without C_SPL: the motion stops exactly at the end
+                                                          point.
+
+                                           In System Software 8.2 and earlier, the identifier for approximate po-
+                                           sitioning with spline was “C_DIS”. If programs based on 8.2 or older
+                                           versions are used in higher versions of 8.x and contain C_DIS, this
+                                    can be retained and does not have to be changed to C_SPL.
+
+            Examples                    SCIRC P2, P3 WITH $CIRC_TYPE=#PATH
+
+                                        SPL P4 WITH $ACC={CP 2.0, ORI1 200, ORI2 200}
+
+
+
+            11.6.4    SLIN_REL, SCIRC_REL, SPL_REL
+
+            Description            SLIN_REL, SCIRC_REL:
+                                   SLIN_REL and SCIRC_REL can be programmed as a segment in a CP spline
+                                   block or as an individual motion.
+                                   It is possible to copy an individual SLIN_REL or SCIRC_REL motion into a CP
+                                   spline block, but only if it does not contain an assignment to system variables
+                                   that are prohibited there.
+
+
+378 / 491                                                                       Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                       11 Programming for user group “Expert”...
+
+
+                          SPL_REL:
+                          SPL_REL can be programmed as a segment in a CP spline block.
+                          For information about the response of the robot controller in the case of infi-
+                          nitely rotating axes: (>>> 11.5.6 "REL motions for infinitely rotating axes"
+                          Page 374)
+
+Syntax                    SLIN_REL:
+                          SLIN_REL End point <WITH SysVar1 = Value1 <, SysVar2 = Value2, …, >>
+                          <C_SPL><#BASE|#TOOL>
+                          SCIRC_REL:
+                          SCIRC_REL Auxiliary point, End point <, CA Circular angle> <WITH SysVar1 =
+                          Value1 <,SysVar2 = Value2 , … >> <C_SPL><#BASE|#TOOL>
+                          SPL_REL:
+                          SPL_REL End point < WITH SysVar1 = Value1 <,SysVar2 = Value2 , …>><#BA-
+                          SE|#TOOL>
+
+Explanation of               Element                                 Description
+the syntax                 Auxiliary point   Type: POS, E6POS, FRAME
+                           End point         The point must be specified in Cartesian coordinates. The
+                                             controller interprets the coordinates as relative to the end
+                                             point of the previous motion.
+                                             If not all components of the point are specified, the control-
+                                             ler sets the value of the missing components to 0. In other
+                                             words, the absolute values of these components remain
+                                             unchanged.
+                                             Specifications of Status and Turn, if present, are ignored by
+                                             the controller. (This is in contrast to SPTP_REL where they
+                                             are taken into consideration!)
+                                             At the auxiliary point, the orientation angles are also
+                                             ignored.
+                                             The auxiliary point cannot be approximated. The motion
+                                             always stops exactly at this point.
+                           Circular angle    Unit: Degrees; without restriction
+                                             (>>> 9.9 "Circular angle" Page 300)
+                           SysVar            (>>> 11.6.7 "System variables for WITH" Page 382)
+                           Value             Value assignment to the system variable.
+                                             In the case of segments: The assignment applies only for
+                                             this segment.
+                                             The system variables can also be assigned values by
+                                             means of a function call. The same restrictions apply to
+                                             these functions as to functions in the trigger.
+                                             (>>> 11.11.3 "Constraints for functions in the trigger"
+                                             Page 431)
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                         379 / 491
+             KUKA System Software 8.3
+
+
+                                         Element                                Description
+                                        C_SPL               With C_SPL: the end point is approximated. $APO de-
+                                                             fines the earliest point at which the approximate posi-
+                                                             tioning can begin.
+                                                             Only possible for individual motions, not for segments.
+                                                            Without C_SPL: the motion stops exactly at the end
+                                                             point.
+                                        #BASE,              #BASE (default): The coordinates of this end point refer
+                                        #TOOL                to the coordinate system that belongs to the physical
+                                                             base.
+                                                            #TOOL: The coordinates of this end point refer to the
+                                                             coordinate system that belongs to the physical tool.
+                                                         $IPO_MODE has no influence on the meaning of #BASE
+                                                         and #TOOL.
+
+            Example                     DECL E6POS P1 = {X 1500, Y -200, Z 2000, A 0, B 0, C 0, S 6, T27}
+
+
+                                        SPTP HOME
+                                        SLIN P1
+
+
+                                        SLIN_REL{X 0, Y 500, Z 0, A 0, B 0, C 0} WITH $BASE=$NULLFRAME #BASE
+                                        SLIN_REL{X 400} WITH $TOOL=$NULLFRAME C_SPL #TOOL
+                                        SLIN_REL{A 20}
+                                        SPTP_REL{A3 90} C_SPL
+                                        SPTP_REL Z 50, B -30} WITH $VEL.AXIS[4]=90 C_SPL #TOOL
+                                        SPTP_REL{A1 100}
+
+
+                                        SPLINE
+                                           SPL P1
+                                           SPL_REL{Z -300, B50} #TOOL
+                                        ENDSPLINE
+                                        PTPSPLINE
+                                           SPTP P1
+                                           SPTP_REL{A1 -100, A5 -70}
+                                        ENDSPLINE
+
+
+
+            11.6.5    SPTP
+
+            Description            SPTP can be programmed as a segment in a PTP spline block or as an indi-
+                                   vidual motion.
+                                   It is possible to copy an individual SPTP motion into a PTP spline block, but
+                                   only if it does not contain an assignment to system variables that are prohibit-
+                                   ed there.
+
+            Syntax                 SPTP End point <WITH SysVar1 = Value1 <, SysVar2 = Value2 , …>> <C_SPL>
+
+
+
+
+380 / 491                                                                         Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                        11 Programming for user group “Expert”...
+
+
+Explanation of               Element                                 Description
+the syntax                 End point         Type: AXIS, E6AXIS, POS, E6POS, FRAME
+                                             The Cartesian coordinates refer to the BASE coordinate
+                                             system.
+                                             If not all components of the end point are specified, the
+                                             controller takes the values of the previous position for the
+                                             missing components. If this previous position is the end
+                                             point of a circle with a circular angle, the values of the end
+                                             point that is actually reached are applied, and not those of
+                                             the programmed end point.
+                                             If no previous position is known to the robot controller, the
+                                             missing components are taken from the current robot posi-
+                                             tion.
+                           SysVar            (>>> 11.6.7 "System variables for WITH" Page 382)
+                           Value             Value assignment to the system variable.
+                                             In the case of SPTP segments: The assignment applies
+                                             only for this segment.
+                                             The system variables can also be assigned values by
+                                             means of a function call. The same restrictions apply to
+                                             these functions as to functions in the trigger.
+                                             (>>> 11.11.3 "Constraints for functions in the trigger"
+                                             Page 431)
+                           C_SPL                With C_SPL: the end point is approximated. $APO de-
+                                                 fines the earliest point at which the approximate posi-
+                                                 tioning can begin.
+                                                 Only possible for individual motions, not for segments.
+                                                Without C_SPL: the motion stops exactly at the end
+                                                 point.
+
+                                 In System Software 8.2 and earlier, the identifier for approximate po-
+                                 sitioning with spline was “C_DIS”. If programs based on 8.2 or older
+                                 versions are used in higher versions of 8.x and contain C_DIS, this
+                          can be retained and does not have to be changed to C_SPL.
+
+
+11.6.6    SPTP_REL
+
+Description               SPTP_REL can be programmed as a segment in a PTP spline block or as an
+                          individual motion.
+                          It is possible to copy an individual SPTP_REL motion into a PTP spline block,
+                          but only if it does not contain an assignment to system variables that are pro-
+                          hibited there.
+                          For information about the response of the robot controller in the case of infi-
+                          nitely rotating axes: (>>> 11.5.6 "REL motions for infinitely rotating axes"
+                          Page 374)
+
+Syntax                    SPTP_REL End point <WITH SysVar1 = Value1 <, SysVar2 = Value2, …>>
+                          <C_SPL><#BASE|#TOOL>
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                          381 / 491
+             KUKA System Software 8.3
+
+
+            Explanation of               Element                              Description
+            the syntax                  End point    Type: AXIS, E6AXIS, POS, E6POS, FRAME
+                                                     The end point can be specified in Cartesian or axis-specific
+                                                     coordinates. The controller interprets the coordinates as
+                                                     relative to the end point of the previous block.
+                                                     If not all components of the end point are specified, the
+                                                     controller sets the value of the missing components to 0. In
+                                                     other words, the absolute values of these components
+                                                     remain unchanged.
+                                                     Specifications of Status and Turn, if present, are taken into
+                                                     consideration by the controller. (This is in contrast to
+                                                     SLIN_REL, SCIRC_REL and SPL_REL where they are
+                                                     ignored!)
+                                        SysVar       (>>> 11.6.7 "System variables for WITH" Page 382)
+                                        Value        Value assignment to the system variable.
+                                                     In the case of SPTP segments: The assignment applies
+                                                     only for this segment.
+                                                     The system variables can also be assigned values by
+                                                     means of a function call. The same restrictions apply to
+                                                     these functions as to functions in the trigger.
+                                                     (>>> 11.11.3 "Constraints for functions in the trigger"
+                                                     Page 431)
+                                        C_SPL           With C_SPL: the end point is approximated. $APO de-
+                                                         fines the earliest point at which the approximate posi-
+                                                         tioning can begin.
+                                                         Only possible for individual motions, not for segments.
+                                                        Without C_SPL: the motion stops exactly at the end
+                                                         point.
+                                        #BASE,       Only permissible if the end point was specified in Cartesian
+                                        #TOOL        coordinates.
+                                                        #BASE (default): The coordinates of this end point refer
+                                                         to the coordinate system that belongs to the physical
+                                                         base.
+                                                        #TOOL: The coordinates of this end point refer to the
+                                                         coordinate system that belongs to the physical tool.
+                                                     $IPO_MODE has no influence on the meaning of #BASE
+                                                     and #TOOL.
+
+            Example                 (>>> "Example" Page 380)
+
+
+            11.6.7    System variables for WITH
+
+            Spline block,          For spline blocks and individual spline motions, it is possible to write to the fol-
+            individual spline      lowing system variables using the WITH line:
+            motion                 $ACC
+                                   $ACC_AXIS
+                                   $ACC_EXTAX
+                                   $APO
+                                   $BASE
+                                   $CIRC_TYPE
+
+
+382 / 491                                                                      Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                      11 Programming for user group “Expert”...
+
+
+                          $ECO_LEVEL
+                          $GEAR_JERK
+                          $IPO_MODE
+                          $JERK
+                          $LOAD
+                          $ORI_TYPE
+                          $ROTSYS
+                          $SPL_ORI_JOINT_AUTO
+                          $SYNC_ID
+                          $SYNC_LIST
+                          $TOOL
+                          $VEL
+                          $VEL_AXIS
+                          $VEL_EXTAX
+                          Additionally for SCIRC and SLIN: $CIRC_MODE
+
+Spline segment            For spline segments, it is possible to write to the following system variables us-
+                          ing the WITH line:
+                          $ACC
+                          $ACC_AXIS
+                          $ACC_EXTAX
+                          $CIRC_TYPE
+                          $EX_AX_IGNORE
+                          $GEAR_JERK
+                          $JERK
+                          $ORI_TYPE
+                          $ROTSYS
+                          $SYNC_ID
+                          $VEL
+                          $VEL_AXIS
+                          $VEL_EXTAX
+                          Additionally for SCIRC and SLIN: $CIRC_MODE
+
+
+11.6.8    TIME_BLOCK
+
+Description               TIME_BLOCK can be used in CP and PTP spline blocks.
+                          TIME_BLOCK can be used to execute the spline block or part of one in a de-
+                          fined time. It is also possible to allocate time components to areas of
+                          TIME_BLOCK.
+                          Points can be modified in, added to or removed from the spline block without
+                          changing the time specifications. This enables the user to correct the Carte-
+                          sian path and retain the existing timing.
+                          A spline block may include 1 time block, i.e. 1 statement of the type
+                          TIME_BLOCK START … TIME_BLOCK END. This, in turn, may contain any
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                        383 / 491
+             KUKA System Software 8.3
+
+
+                                   number of TIME_BLOCK PART statements. The time block may only be used
+                                   in spline blocks.
+                                   A CP spline block can contain either 1 time block or 1 constant velocity range,
+                                   but not both.
+
+            Syntax                 SPLINE
+                                   <Spline segments…>
+                                   …
+                                   TIME_BLOCK START
+                                   Spline segment
+                                   <Spline segments…>
+                                   ...
+                                   < <TIME_BLOCK PART = Component_1>
+                                   …
+                                   Spline segment
+                                   <Spline segments…>
+                                   ...
+                                   TIME_BLOCK PART = Component_N>
+                                   TIME_BLOCK END = Overall time
+                                   <Spline segments…>
+                                   …
+                                   ENDSPLINE
+
+            Explanation of         It is not essential for there to be spline segments before TIME_BLOCK START
+            the syntax             and after TIME_BLOCK END. It is nonetheless advisable to program as fol-
+                                   lows:
+                                        There is at least 1 spline segment between SPLINE and TIME_BLOCK
+                                         START.
+                                        There is at least 1 spline segment between TIME_BLOCK END and END-
+                                         SPLINE.
+                                   Advantages:
+                                        The programmed overall time is maintained exactly even in the case of ap-
+                                         proximate positioning.
+                                        Segments before TIME_BLOCK START make it possible to accelerate to
+                                         the required velocity.
+
+
+
+
+384 / 491                                                                     Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                        11 Programming for user group “Expert”...
+
+
+                            Element                                  Description
+                          Component         Type: INT or REAL; constant, variable or function
+                                            Desired component of Overall time for the following dis-
+                                            tance:
+                                               From the point before TIME_BLOCK
+                                                PART=Previous_component
+                                                to the point before TIME_BLOCK PART=Component
+                                               If Previous_component does not exist:
+                                                From the point before TIME_BLOCK START
+                                                to the point before TIME_BLOCK PART=Component
+                                            “Desired component” means: the components are main-
+                                            tained as accurately as possible by the robot controller.
+                                            Generally, however, they are not maintained exactly.
+                                            The user can assign the components in such a way that
+                                            they add up to 100. The components can then be consid-
+                                            ered as percentages of Overall time.
+                                            The components do not have to add up to 100, however,
+                                            and can have any sum! The robot controller always
+                                            equates the sum of the components to Overall time. This
+                                            allows the components to be used very flexibly and also
+                                            changed.
+                                            If components are assigned, there must always be a
+                                            TIME_BLOCK PART directly before TIME_BLOCK END.
+                                            There must be no segments in between.
+                          Overall time      Type: INT or REAL; constant, variable or function; unit: s
+                                            Time in which the following distance is traveled:
+                                               From the point before TIME_BLOCK START
+                                                to the point before TIME_BLOCK END
+                                            The value must be greater than 0. The overall time is main-
+                                            tained exactly. If this time cannot be maintained, e.g.
+                                            because too short a time has been programmed, the robot
+                                            executes the motion in the fastest possible time. In T1 and
+                                            T2, a message is also displayed.
+
+                                   If the value for Component or Overall time is assigned via a function, the
+                                   same restrictions apply as for the functions in the trigger.
+                                    (>>> 11.11.3 "Constraints for functions in the trigger" Page 431)
+
+Example                   SPLINE
+                            SLIN P1
+                            SPL P2
+                            TIME_BLOCK START
+                               SLIN P3
+                            TIME_BLOCK PART = 12.7
+                               SPL P4
+                               SPL P5
+                               SPL P6
+                            TIME_BLOCK PART = 56.4
+                               SCIRC P7, P8
+                               SPL P9
+                            TIME_BLOCK PART = 27.8
+                            TIME_BLOCK END = 3.9
+                            SLIN P10
+                          ENDSPLINE
+
+
+Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                           385 / 491
+

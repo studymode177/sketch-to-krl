@@ -1,0 +1,469 @@
+             KUKA System Software 8.3
+
+
+                                        STRUC S_TYP REAL NUMBER, CHAR TEXT[80]
+
+
+            Example 3              Example of aggregates as values of an aggregate:
+                                        STRUC INNER_TYP INT A, B, C
+                                        STRUC OUTER_TYP INNER_TYP Q, R
+                                        DECL OUTER_TYP MYVAR
+                                        ...
+                                        MYVAR = {Q {A 1, B 4}, R {A 3, C 2}}
+
+
+
+            11.5      Motion programming: PTP, LIN, CIRC
+
+            11.5.1    PTP
+
+            Description            Executes a point-to-point motion to the end point. The coordinates of the end
+                                   point are absolute.
+
+            Syntax                 PTP End point <Approximation>
+
+            Explanation of                Element                              Description
+            the syntax                  End point      Type: POS, E6POS, AXIS, E6AXIS, FRAME
+                                                       The end point can be specified in Cartesian or axis-specific
+                                                       coordinates. Cartesian coordinates refer to the BASE coor-
+                                                       dinate system.
+                                                       If not all components of the end point are specified, the
+                                                       controller takes the values of the previous position for the
+                                                       missing components.
+                                        Approxima-     Approximation causes the end point to be approximated. At
+                                        tion           the same time, this parameter defines the earliest point at
+                                                       which the approximate positioning can begin.
+                                                       (>>> 11.5.5 "Approximation parameters for PTP, LIN CIRC
+                                                       and …_REL" Page 372)
+
+            Example 1              End point specified in Cartesian coordinates.
+                                        PTP {X 12.3,Y 100.0,Z 50,A 9.2,B 50,C 0,S ’B010’,T ’B1010’}
+
+
+            Example 2              End point specified in axis-specific coordinates. The end point is approximat-
+                                   ed.
+                                        PTP {A1 10,A2 -80.6,A3 -50,A4 0,A5 14.2, A6 0} C_DIS
+
+
+            Example 3              End point specified with only 2 components. For the rest of the components,
+                                   the controller takes the values of the previous position.
+                                        PTP {Z 500,X 123.6}
+
+
+
+            11.5.2    PTP_REL
+
+            Description            Executes a point-to-point motion to the end point. The coordinates of the end
+                                   point are relative to the current position.
+
+                                              A REL statement always refers to the current position of the robot. For
+                                              this reason, if a REL motion is interrupted, the robot executes the en-
+                                              tire REL motion again, starting from the position at which it was inter-
+                                    rupted.
+
+
+
+368 / 491                                                                       Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                       11 Programming for user group “Expert”...
+
+
+                          For information about the response of the robot controller in the case of infi-
+                          nitely rotating axes: (>>> 11.5.6 "REL motions for infinitely rotating axes"
+                          Page 374)
+
+Syntax                    PTP_REL End point <Approximation> <#BASE|#TOOL>
+
+Explanation of               Element                                 Description
+the syntax                 End point         Type: POS, E6POS, AXIS, E6AXIS
+                                             The end point can be specified in Cartesian or axis-specific
+                                             coordinates. The controller interprets the coordinates as
+                                             relative to the current position. Cartesian coordinates refer
+                                             to the BASE coordinate system.
+                                             If not all components of the end point are specified, the
+                                             controller sets the value of the missing components to 0. In
+                                             other words, the absolute values of these components
+                                             remain unchanged.
+                           Approxima-        Approximation causes the end point to be approximated. At
+                           tion              the same time, this parameter defines the earliest point at
+                                             which the approximate positioning can begin.
+                                             (>>> 11.5.5 "Approximation parameters for PTP, LIN CIRC
+                                             and …_REL" Page 372)
+                           #BASE,            Only permissible if the end point was specified in Cartesian
+                           #TOOL             coordinates.
+                                                #BASE (default): The coordinates of this end point refer
+                                                 to the coordinate system that belongs to the physical
+                                                 base.
+                                                #TOOL: The coordinates of this end point refer to the
+                                                 coordinate system that belongs to the physical tool.
+                                             $IPO_MODE has no influence on the meaning of #BASE
+                                             and #TOOL.
+
+Example 1                 Axis 2 is moved 30 degrees in a negative direction. None of the other axes
+                          moves.
+                           PTP_REL {A2 -30}
+
+
+Example 2                 The robot moves 100 mm in the X direction and 200 mm in the negative Z di-
+                          rection from the current position. Y, A, B, C and S remain constant. T is calcu-
+                          lated in relation to the shortest path.
+                           PTP_REL {X 100,Z -200}
+
+
+
+11.5.3    LIN, CIRC
+
+Description               LIN:
+                          LIN executes a linear motion to the end point. The coordinates of the end point
+                          are absolute.
+                          CIRC:
+                          CIRC executes a circular motion. An auxiliary point and an end point must be
+                          specified in order for the controller to be able to calculate the circular motion.
+                          The coordinates of the auxiliary point and end point are absolute.
+
+Syntax                    LIN:
+                          LIN End point <Approximation>
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                         369 / 491
+             KUKA System Software 8.3
+
+
+                                   CIRC:
+                                   CIRC Auxiliary point, End point<, CA Circular angle> <Approximation>
+
+            Explanation of                Element                                  Description
+            the syntax                  Auxiliary point   Type: POS, E6POS, FRAME
+                                                          If not all components of the auxiliary point are specified, the
+                                                          controller takes the values of the previous position for the
+                                                          missing components.
+                                                          The orientation angles and the Status and Turn specifica-
+                                                          tions for an auxiliary point are always disregarded.
+                                                          The auxiliary point cannot be approximated. The motion
+                                                          always stops exactly at this point.
+                                                          The coordinates refer to the BASE coordinate system.
+                                        End point         Type: POS, E6POS, FRAME
+                                                          If not all components of the end point are specified, the
+                                                          controller takes the values of the previous position for the
+                                                          missing components.
+                                                          The Status and Turn specifications for an end point of type
+                                                          POS or E6POS are disregarded.
+                                                          The coordinates refer to the BASE coordinate system.
+                                        Circular angle    Unit: Degrees; without restriction
+                                                          (>>> 9.9 "Circular angle" Page 300)
+                                        Approxima-        Approximation causes the end point to be approximated. At
+                                        tion              the same time, this parameter defines the earliest point at
+                                                          which the approximate positioning can begin.
+                                                          (>>> 11.5.5 "Approximation parameters for PTP, LIN CIRC
+                                                          and …_REL" Page 372)
+
+            Examples               End point with two components. For the rest of the components, the controller
+                                   takes the values of the previous position.
+                                        LIN {Z 500,X 123.6}
+
+                                   The end point of the circular motion is defined by a circular angle of 260°. The
+                                   end point is approximated.
+                                        CIRC {X 5,Y 0, Z 9.2},{X 12.3,Y 0,Z -5.3,A 9.2,B -5,C 20}, CA 260
+                                        C_ORI
+
+
+
+            11.5.4    LIN_REL, CIRC_REL
+
+            Description            LIN_REL:
+                                   LIN_REL executes a linear motion to the end point. The coordinates of the end
+                                   point are relative to the current position.
+                                   CIRC_REL:
+                                   CIRC_REL executes a circular motion. An auxiliary point and an end point
+                                   must be specified in order for the controller to be able to calculate the circular
+                                   motion. The coordinates of the auxiliary point and end point are relative to the
+                                   current position.
+
+
+
+
+370 / 491                                                                           Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                        11 Programming for user group “Expert”...
+
+
+
+                                    A REL statement always refers to the current position of the robot. For
+                                    this reason, if a REL motion is interrupted, the robot executes the en-
+                                    tire REL motion again, starting from the position at which it was inter-
+                          rupted.
+
+                          For information about the response of the robot controller in the case of infi-
+                          nitely rotating axes: (>>> 11.5.6 "REL motions for infinitely rotating axes"
+                          Page 374)
+
+Syntax                    LIN_REL:
+                          LIN_REL End point <Approximation> <#BASE|#TOOL>
+                          CIRC_REL:
+                          CIRC_REL Auxiliary point, End point<, CA Circular angle> <Approximation>
+                          <#BASE|#TOOL>
+
+Explanation of               Element                                  Description
+the syntax                 Auxiliary point   Type: POS, E6POS, FRAME
+                                             The auxiliary point must be specified in Cartesian coordi-
+                                             nates. The controller interprets the coordinates as relative
+                                             to the current position. The coordinates refer to the BASE
+                                             coordinate system.
+                                             If $ORI_TYPE, Status and/or Turn are specified, these
+                                             specifications are ignored.
+                                             If not all components of the auxiliary point are specified, the
+                                             controller sets the value of the missing components to 0. In
+                                             other words, the absolute values of these components
+                                             remain unchanged.
+                                             The orientation angles and the Status and Turn specifica-
+                                             tions for an auxiliary point are disregarded.
+                                             The auxiliary point cannot be approximated. The motion
+                                             always stops exactly at this point.
+                           End point         Type: POS, E6POS, FRAME
+                                             The end point must be specified in Cartesian coordinates.
+                                             The controller interprets the coordinates as relative to the
+                                             current position.
+                                             CIRC_REL: The coordinates refer to the BASE coordinate
+                                             system.
+                                             LIN_REL: The coordinates can refer to the BASE or TOOL
+                                             coordinate system.
+                                             If not all components of the end point are specified, the
+                                             controller sets the value of the missing components to 0. In
+                                             other words, the absolute values of these components
+                                             remain unchanged.
+                                             The Status and Turn specifications for an end point of type
+                                             POS or E6POS are disregarded.
+                           Circular angle    Unit: Degrees; without restriction
+                                             (>>> 9.9 "Circular angle" Page 300)
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                          371 / 491
+             KUKA System Software 8.3
+
+
+                                         Element                              Description
+                                        Approxima-    Approximation causes the end point to be approximated. At
+                                        tion          the same time, this parameter defines the earliest point at
+                                                      which the approximate positioning can begin.
+                                                      (>>> 11.5.5 "Approximation parameters for PTP, LIN CIRC
+                                                      and …_REL" Page 372)
+                                        #BASE,           #BASE (default): The coordinates of this end point refer
+                                        #TOOL             to the coordinate system that belongs to the physical
+                                                          base.
+                                                         #TOOL: The coordinates of this end point refer to the
+                                                          coordinate system that belongs to the physical tool.
+                                                      $IPO_MODE has no influence on the meaning of #BASE
+                                                      and #TOOL.
+
+                                              Information about $APO is contained in the System Variables docu-
+                                              mentation.
+
+
+            Examples               Example 1:
+                                   The TCP moves 100 mm in the X direction and 200 mm in the negative Z di-
+                                   rection from the current position in the BASE coordinate system. Y, A, B, C
+                                   and S remain constant. T is determined by the motion.
+                                        LIN_REL {X 100,Z -200}
+
+                                   Example 2:
+                                   The TCP moves 100 mm from the current position in the negative X direction
+                                   in the TOOL coordinate system. Y, Z, A, B, C and S remain constant. T is de-
+                                   termined by the motion.
+                                   This example is suitable for moving the tool backwards against the tool direc-
+                                   tion. The precondition is that the tool direction has been calibrated along the
+                                   X axis.
+                                        LIN_REL {X -100} #TOOL
+
+                                   Example 3:
+                                   The end point of the circular motion is defined by a circular angle of 500°. The
+                                   end point is approximated.
+                                        CIRC_REL {X 100,Y 3.2,Z -20},{Y 50},CA 500 C_VEL
+
+
+
+            11.5.5    Approximation parameters for PTP, LIN CIRC and …_REL
+
+            Parameters             Not every parameter can be used in every instruction.
+
+                                          Parameter       Description
+                                            C_PTP         Approximation starts, at the earliest, when half the dis-
+                                                          tance between the start point and end point relative to
+                                                          the contour of the motion without approximation has
+                                                          been covered.
+                                            C_DIS         Approximation starts, at the earliest, when the distance
+                                                          to the end point falls below the value of $APO.CDIS.
+
+
+
+
+372 / 491                                                                      Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                       11 Programming for user group “Expert”...
+
+
+                              Parameter         Description
+                                 C_ORI          Approximation starts, at the earliest, when the dominant
+                                                orientation angle falls below the value of $APO.CORI.
+                                 C_VEL          Approximation starts, at the earliest, when the velocity
+                                                in the deceleration phase to the end point falls below the
+                                                value of $APO.CVEL.
+
+                                   Information about $APO is contained in the System Variables docu-
+                                   mentation.
+
+
+PTP,                      The parameter must be C_PTP or C_DIS for PTP-PTP approximation. If a
+PTP_REL                   second parameter is specified, the robot controller ignores it.
+                          Two parameters can be specified for PTP-CP approximation. Of the two pa-
+                          rameters, the one resulting in the smaller approximate positioning radius in the
+                          given situation takes effect.
+                          Possible combinations for PTP-CP approximation:
+
+                              1st parameter →                  C_PTP                         C_DIS
+                              2nd parameter ↓
+                                   (without)                   Possible                     Possible
+                                     C_DIS                     Possible                  Not possible!
+                                     C_VEL                     Possible                     Possible
+                                     C_ORI                     Possible                     Possible
+
+                          Example: PTP-CP approximation
+                           PTP XP1 C_PTP C_DIS
+                           LIN XP2
+
+                          The robot controller calculates the approximate positioning radius which would
+                          result from each of the two parameters C_PTP and C_DIS under the current
+                          conditions (velocity, etc.). Only the smaller of the two radii then actually has an
+                          effect. It is the earliest limit at which approximate positioning can begin.
+
+LIN, CIRC,                The parameter must be C_DIS, C_VEL or C_ORI for CP-CP approximation. If
+LIN_REL,                  a second parameter is specified, the robot controller ignores it.
+CIRC_REL                  Two parameters can be specified for CP-PTP approximation. Of the two pa-
+                          rameters, the one resulting in the smaller approximate positioning radius in the
+                          given situation takes effect.
+                          Possible combinations for CP-PTP approximation:
+
+                              1st parameter →              C_DIS             C_VEL                C_ORI
+                              2nd parameter ↓
+                                   (without)              Possible           Possible            Possible
+                                     C_PTP                Possible           Possible            Possible
+                                     C_DIS                Possible           Possible            Possible
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                         373 / 491
+             KUKA System Software 8.3
+
+
+            11.5.6    REL motions for infinitely rotating axes
+
+            Description
+                                        Motion                        Description
+                                        SPTP_REL                      The end position is calculated directly by
+                                        For external axes only:       adding the start position to the value spec-
+                                                                      ified in the REL statement. The overall
+                                        SLIN_REL, SCIRC_REL,          length of the resulting path is irrelevant.
+                                        SPL_REL
+                                        PTP_REL                       The axis only moves to positions with the
+                                        For external axes only:       following interval:
+
+                                        LIN_REL, CIRC_REL                From “Start position minus 180°”
+                                                                         To “Start position plus 180°”
+                                                                      If the addition of the start position and the
+                                                                      value specified in the REL statement
+                                                                      gives a value outside this interval, the
+                                                                      actual end position is calculated as the dif-
+                                                                      ference of the value from 360° or a multi-
+                                                                      ple of 360°.
+
+            Examples               Let A6 and E1 be infinitely rotating axes with the start position 120°.
+                                   Let the position at X be = 1500 mm.
+                                   Example 1:
+
+                                        Statement                           End position
+                                        SPTP_REL {A6 330}                   A6 = 450°
+                                        PTP_REL {A6 330}                    A6 = 90°
+
+                                   Explanation of end position of PTP_REL:
+                                   The permissible interval is from -60° to 300°. The position 450° is outside this
+                                   interval and is thus not addressed.
+                                   The end position must be within the interval AND be calculated as follows:
+                                         450° ± (x * 360°)
+                                   The end position that meets these criteria is 90°.
+                                   450° - (1 * 360°) = 90°
+                                   Example 2:
+
+                                        Statement                           End position
+                                        SPTP_REL {A6 550}                   A6 = 670°
+                                        PTP_REL {A6 550}                    A6 = -50°
+
+                                   Example 3:
+
+                                        Statement                           End position
+                                        SPTP_REL {E1 950}                   E1 = 1070°
+                                        PTP_REL {E1 950}                    E1 = -10°
+
+                                   The statements do not contain any specification of the robot position. This im-
+                                   plicitly corresponds to: {X 0, Y 0, Z 0, A 0, B 0, C 0}
+                                   The Cartesian robot position thus remains unchanged in both cases.
+                                   Example 4:
+
+
+
+
+374 / 491                                                                     Issued: 14.01.2015 Version: KSS 8.3 SI V4
+                                                                       11 Programming for user group “Expert”...
+
+
+                              Statement                             End position
+                              SPTP_REL {A6 0, E1 950}               A6 = 120°, E1 = 1070°
+                              PTP_REL {A6 0, E1 950}                A6 = 120°, E1 = -10°
+
+                          The robot position, if not specified, is implicitly Cartesian, as explained in ex-
+                          ample 3.
+                          If, however, the axis-specific robot position and not the Cartesian position is to
+                          remain unchanged, a zero motion must be specified explicitly for at least one
+                          robot axis, as illustrated here in example 4.
+                          Example 5:
+
+                              Statement                             End position
+                              SLIN_REL {X 300, E1 880}              X = 1800 mm, E1 = 1000°
+                              LIN_REL {X 300, E1 880}               X = 1800 mm, E1 = 280°
+
+                          External axis motions are always axis-specific. They are thus specified in de-
+                          grees, even in these statements that only allow Cartesian coordinates for robot
+                          positions.
+
+
+11.6      Motion programming: spline
+
+11.6.1    SPLINE ... ENDSPLINE
+
+Description               SPLINE … ENDSPLINE defines a CP spline block. A CP spline block may
+                          contain:
+                               SLIN, SCIRC and SPL segments (number limited only by the memory ca-
+                                pacity)
+                               PATH trigger
+                               1 time block (TIME_BLOCK …)
+                                or 1 constant velocity range (CONST_VEL …)
+                               STOP WHEN PATH
+                               Comments
+                               Blank lines
+                          The block must not include any other instructions, e.g. variable assignments
+                          or logic statements.
+
+                                 The start point of a spline block is the last point before the spline
+                                 block.
+                                 The end point of a spline block is the last point in the spline block.
+                          A spline block does not trigger an advance run stop.
+
+Syntax                    SPLINE < WITH SysVar1 = Value1 <, SysVar2 = Value2, … > >
+                          Segment1
+                          …
+                          <SegmentN>
+                          ENDSPLINE <C_SPL>
+
+
+
+
+ Issued: 14.01.2015 Version: KSS 8.3 SI V4                                                                         375 / 491
+
