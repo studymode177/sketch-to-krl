@@ -1,0 +1,30 @@
+DEF sketch_program()
+  INI
+  
+  DECL E6POS home_position = {X 0, Y 0, Z 0, A 0, B 0, C 0, S 6, T 27}
+  
+  ; Move to home position
+  PTP home_position
+  
+  ; Process detected paths from sketch
+  ; Path 1 motion
+  PTP {X 100, Y 200, Z 300, A 0, B 0, C 0, S 6, T 27}
+  
+  ; Path 2 motion
+  LIN {X 150, Y 250, Z 300, A 0, B 0, C 0, S 6, T 27} C_VEL
+  
+  ; Path 3 motion
+  CIRC {X 175, Y 275, Z 300, A 0, B 0, C 0, S 6, T 27}, {X 200, Y 300, Z 300, A 0, B 0, C 0, S 6, T 27} C_VEL
+  
+  ; Path 4 motion
+  SPLINE
+    SPL {X 225, Y 325, Z 300, A 0, B 0, C 0, S 6, T 27}
+    SPL {X 250, Y 350, Z 300, A 0, B 0, C 0, S 6, T 27}
+    SPL {X 275, Y 375, Z 300, A 0, B 0, C 0, S 6, T 27}
+    SPL {X 300, Y 400, Z 300, A 0, B 0, C 0, S 6, T 27}
+    SPL {X 325, Y 425, Z 300, A 0, B 0, C 0, S 6, T 27}
+  ENDSPLINE
+  
+  ; Return to home position
+  PTP home_position
+END
